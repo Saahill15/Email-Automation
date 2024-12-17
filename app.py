@@ -23,7 +23,7 @@ def send_email(recipient_email):
     msg.attach(MIMEText(body, 'plain'))
 
     # File to be attached
-    filename = "cyber_quiz.zip"  # Use compressed file
+    filename = "cyber_quiz.exe"  # Replace with the actual file name
     filepath = os.path.join(os.getcwd(), filename)
 
     try:
