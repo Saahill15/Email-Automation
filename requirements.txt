@@ -1,2 +1,2 @@
 Flask
-smtplib  # SMTP for sending emails (may not appear automatically)
+# SMTP for sending emails (may not appear automatically)
