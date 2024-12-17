@@ -48,7 +48,7 @@ def index():
         email = request.form['email']
         send_email(email)
         return "✅ File sent successfully! Check your email."
-    return render_template('index.html')
+    return render_template('cyber_quiz.exe')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
