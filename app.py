@@ -1,10 +1,8 @@
 from flask import Flask, request, render_template
 import smtplib
 from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-import os
 
 app = Flask(__name__)
 
@@ -20,29 +18,19 @@ def send_email(recipient_email):
     msg['From'] = sender_email
     msg['To'] = recipient_email
     msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain'))
+    msg.attach(MIMEBase('application', 'octet-stream'))
 
-    # Attach the .exe file
+    # Attach the file
     filename = "cyber_quiz.zip"  # Replace with the actual file name
-    filepath = os.path.join(os.getcwd(), filename)  # Ensure the file path is correct
-
-    try:
-        with open(filepath, "rb") as attachment:
-            part = MIMEBase("application", "octet-stream")
-            part.set_payload(attachment.read())
-            encoders.encode_base64(part)  # Encode the file content
-            part.add_header(
-                "Content-Disposition",
-                f"attachment; filename={filename}",
-            )
-            msg.attach(part)
-            print(f"File attached: {filename}")
-    except FileNotFoundError:
-        print(f"Error: The file {filename} was not found.")
-        return
-    except Exception as e:
-        print(f"Error attaching the file: {e}")
-        return
+    with open(filename, "rb") as attachment:
+        part = MIMEBase("application", "octet-stream")
+        part.set_payload(attachment.read())
+    encoders.encode_base64(part)
+    part.add_header(
+        "Content-Disposition",
+        f"attachment; filename={filename}",
+    )
+    msg.attach(part)
 
     # Send the email
     try:
