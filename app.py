@@ -1,8 +1,9 @@
-efrom flask import Flask, request, render_template
+from flask import Flask, request, render_template
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
+import os
 
 app = Flask(__name__)
 
@@ -18,19 +19,21 @@ def send_email(recipient_email):
     msg['From'] = sender_email
     msg['To'] = recipient_email
     msg['Subject'] = subject
-    msg.attach(MIMEBase('application', 'octet-stream'))
+    msg.attach(MIMEText(body, 'plain'))  # Added body as text
 
-    # Attach the file
+    # Attach the .exe file
     filename = "cyber_quiz.exe"  # Replace with the actual file name
-    with open(filename, "rb") as attachment:
+    filepath = os.path.join(os.getcwd(), filename)  # Ensure the file path is correct
+
+    with open(filepath, "rb") as attachment:
         part = MIMEBase("application", "octet-stream")
         part.set_payload(attachment.read())
-    encoders.encode_base64(part)
-    part.add_header(
-        "Content-Disposition",
-        f"attachment; filename={filename}",
-    )
-    msg.attach(part)
+        encoders.encode_base64(part)  # Encode the file content
+        part.add_header(
+            "Content-Disposition",
+            f"attachment; filename={filename}",
+        )
+        msg.attach(part)
 
     # Send the email
     try:
@@ -48,7 +51,7 @@ def index():
         email = request.form['email']
         send_email(email)
         return "✅ File sent successfully! Check your email."
-    return render_template('cyber_quiz.exe')
+    return render_template('index.html')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
