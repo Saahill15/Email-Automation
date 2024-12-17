@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+efrom flask import Flask, request, render_template
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
@@ -21,7 +21,7 @@ def send_email(recipient_email):
     msg.attach(MIMEBase('application', 'octet-stream'))
 
     # Attach the file
-    filename = "cyber_quiz.c"  # Replace with the actual file name
+    filename = "cyber_quiz.exe"  # Replace with the actual file name
     with open(filename, "rb") as attachment:
         part = MIMEBase("application", "octet-stream")
         part.set_payload(attachment.read())
