@@ -8,8 +8,8 @@ app = Flask(__name__)
 
 # Email sending function
 def send_email(recipient_email):
-    sender_email = "your-email@gmail.com"  # Replace with your email
-    sender_password = "your-email-password"  # Replace with your email password
+    sender_email = "sahililiyaskhan@gmail.com"  # Replace with your email
+    sender_password = "66220666*"  # Replace with your email password
     subject = "Your Cybersecurity Quiz Game File"
     body = "Hi there!\n\nHere's the Cybersecurity Quiz Game file you requested. Enjoy learning cybersecurity!\n\nBest regards, Cyber Quiz Team"
 
