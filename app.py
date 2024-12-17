@@ -1,7 +1,7 @@
-from email.mime.text import MIMEText
 from flask import Flask, request, render_template
 import smtplib
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 import os
@@ -20,21 +20,32 @@ def send_email(recipient_email):
     msg['From'] = sender_email
     msg['To'] = recipient_email
     msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'plain'))  # Added body as text
+    msg.attach(MIMEText(body, 'plain'))
 
     # Attach the .exe file
     filename = "cyber_quiz.exe"  # Replace with the actual file name
     filepath = os.path.join(os.getcwd(), filename)  # Ensure the file path is correct
 
-    with open(filepath, "rb") as attachment:
-        part = MIMEBase("application", "octet-stream")
-        part.set_payload(attachment.read())
-        encoders.encode_base64(part)  # Encode the file content
-        part.add_header(
-            "Content-Disposition",
-            f"attachment; filename={filename}",
-        )
-        msg.attach(part)
+    print(f"Attempting to attach the file: {filename} from path: {filepath}")
+    try:
+        # Check if the file exists
+        if not os.path.isfile(filepath):
+            print(f"Error: The file {filename} does not exist at path {filepath}")
+            return
+
+        with open(filepath, "rb") as attachment:
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(attachment.read())
+            encoders.encode_base64(part)  # Encode the file content
+            part.add_header(
+                "Content-Disposition",
+                f"attachment; filename={filename}",
+            )
+            msg.attach(part)
+            print(f"File successfully attached: {filename}")
+    except Exception as e:
+        print(f"Error attaching the file: {e}")
+        return
 
     # Send the email
     try:
@@ -42,7 +53,7 @@ def send_email(recipient_email):
             server.starttls()
             server.login(sender_email, sender_password)
             server.send_message(msg)
-            print(f"Email sent to {recipient_email}")
+            print(f"Email sent successfully to {recipient_email}")
     except Exception as e:
         print(f"Failed to send email: {e}")
 
@@ -50,6 +61,7 @@ def send_email(recipient_email):
 def index():
     if request.method == 'POST':
         email = request.form['email']
+        print(f"Received email: {email}")  # Log the received email
         send_email(email)
         return "✅ File sent successfully! Check your email."
     return render_template('index.html')
